@@ -1,8 +1,8 @@
 package storyTeller.implementations;
 
 import messages.TextEnglish;
-import story.Prompt;
-import story.chapterOne.sceneZero.PromptZero;
+import story.nodes.Node;
+import story.nodes.chapterOne.sceneZero.NodeZero;
 import storyTeller.iStoryTeller;
 
 import java.util.HashSet;
@@ -29,7 +29,8 @@ public class StoryTeller implements iStoryTeller {
     //TODO: store these somewhere special to them.
     String name = null;
     String gender = null;
-    HashSet<Prompt> activePrompts = new HashSet<>();
+    HashSet<Node> activeNodes = new HashSet<>();
+    HashSet<String> messagesSaidOrHeard = new HashSet<>();
 
     @Override
     public void initialize() {
@@ -46,13 +47,13 @@ public class StoryTeller implements iStoryTeller {
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-        Prompt firstPrompt = new PromptZero();
+        Node firstNode = new NodeZero();
 
-        activePrompts.add(firstPrompt);
+        activeNodes.add(firstNode);
 
-        firstPrompt.execute(scanner, executorService, activePrompts);
+        firstNode.execute(scanner, executorService, activeNodes, messagesSaidOrHeard);
 
-        while (!activePrompts.isEmpty()) {
+        while (!activeNodes.isEmpty()) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
