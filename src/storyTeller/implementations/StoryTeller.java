@@ -1,14 +1,10 @@
 package storyTeller.implementations;
 
-import messages.TextEnglish;
-import story.nodes.Node;
-import story.nodes.chapterOne.sceneZero.NodeZero;
+import messages.Prompt;
+import story.nodes.StoryRunner;
 import storyTeller.iStoryTeller;
 
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Default implementation.
@@ -29,39 +25,23 @@ public class StoryTeller implements iStoryTeller {
     //TODO: store these somewhere special to them.
     String name = null;
     String gender = null;
-    HashSet<Node> activeNodes = new HashSet<>();
-    HashSet<String> messagesSaidOrHeard = new HashSet<>();
 
     @Override
     public void initialize() {
         //Screw it. I need to get a functioning prototype to break my inertia. Then I'll scrap it into something that makes sense.
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println(TextEnglish.PROMPT_NAME);
+        //TODO: create prompts that allow custom-typed responses for things such as this.
+        System.out.println(Prompt.PROMPT_NAME);
 
         name = scanner.nextLine();
 
-        System.out.println(TextEnglish.PROMPT_GENDER);
+        System.out.println(Prompt.PROMPT_GENDER);
 
         gender = scanner.nextLine();
 
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        StoryRunner storyRunner = new StoryRunner();
 
-        Node firstNode = new NodeZero();
-
-        activeNodes.add(firstNode);
-
-        firstNode.execute(scanner, executorService, activeNodes, messagesSaidOrHeard);
-
-        while (!activeNodes.isEmpty()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                //Weeeee
-            }
-        }
-
-        scanner.close();
-        executorService.shutdownNow();
+        storyRunner.begin(scanner);
     }
 }
